@@ -1,10 +1,10 @@
-# 🔥 AI-Based Thermal Powerline Hotspot Detection
+# AI-Based Thermal Powerline Hotspot Detection
 
 > An end-to-end AI pipeline for detecting thermal anomalies in power lines and transmission towers using drone-based thermal inspection data.
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 Power lines and transmission towers are prone to thermal failures caused by loose connectors, overloading, insulation degradation, and corrosion. Left undetected, these anomalies can lead to equipment failure, wildfires, and large-scale outages.
 
@@ -18,7 +18,7 @@ This capstone project builds a complete **AI-driven inspection pipeline** that:
 
 ---
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```
 thermal-powerline-hotspot-detection/
@@ -37,13 +37,13 @@ thermal-powerline-hotspot-detection/
 
 ---
 
-## 📓 Notebook
+##  Notebook
 
-👉 **[Open in Google Colab](https://colab.research.google.com/github/siddhramesh/thermal-powerline-hotspot-detection/blob/main/thermal_hotspot_detection.ipynb)**
+**[Open in Google Colab](https://colab.research.google.com/github/siddhramesh/thermal-powerline-hotspot-detection/blob/main/thermal_hotspot_detection.ipynb)**
 
 ---
 
-## 📊 Dataset
+##  Dataset
 
 | Property | Value |
 |---|---|
@@ -68,7 +68,7 @@ thermal-powerline-hotspot-detection/
 
 ---
 
-## 🧪 Tasks & Results
+##  Tasks & Results
 
 ### Task 1 — Data Understanding
 Explored all 8 features, plotted distributions, correlation heatmap, and label balance. Key finding: `temp_mean`, `temp_max`, and `hotspot_fraction` are the strongest visual separators between normal and fault tiles.
@@ -146,7 +146,7 @@ Discussed key dataset limitations and proposed a production-grade improved pipel
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Tool | Purpose |
 |---|---|
@@ -160,7 +160,7 @@ Discussed key dataset limitations and proposed a production-grade improved pipel
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 1. Clone the repository:
 ```bash
@@ -168,19 +168,19 @@ git clone https://github.com/siddhramesh/thermal-powerline-hotspot-detection.git
 ```
 
 2. Open the notebook in Google Colab:
-   👉 [Click here to open in Colab](https://colab.research.google.com/github/siddhramesh/thermal-powerline-hotspot-detection/blob/main/thermal_hotspot_detection.ipynb)
+    [Click here to open in Colab](https://colab.research.google.com/github/siddhramesh/thermal-powerline-hotspot-detection/blob/main/thermal_hotspot_detection.ipynb)
 
 3. Run all cells from top to bottom (Runtime → Run all)
 
 ---
 
-## 👤 Author
+## Author
 
 **Siddhramesh Diksanggi**  
 Capstone Project — AI-Based Power Line & Tower Hotspot Detection Using Thermal Data
 
 ---
 
-## 📄 License
+##  License
 
 This project is for educational purposes as part of a capstone submission.
