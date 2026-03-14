@@ -1,4 +1,4 @@
-# 🔥 AI-Based Thermal Powerline Hotspot Detection
+# AI-Based Thermal Powerline Hotspot Detection
 
 > End-to-end AI pipeline for detecting thermal anomalies in power lines and transmission towers using drone-based thermal inspection data.
 
@@ -6,13 +6,13 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 Power lines and towers develop thermal faults due to loose connectors, overloading, and insulation degradation. This project builds an AI pipeline that classifies tile-level thermal features from drone imagery, maps spatial risk zones, and recommends maintenance actions — enabling predictive maintenance before failures occur.
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 thermal-powerline-hotspot-detection/
@@ -35,7 +35,7 @@ thermal-powerline-hotspot-detection/
 
 ---
 
-## 📊 Dataset
+## Dataset
 
 | Property | Value |
 |---|---|
@@ -58,7 +58,7 @@ thermal-powerline-hotspot-detection/
 
 ---
 
-## 🧪 Tasks
+## Tasks
 
 ### Task 1 — Data Understanding
 Explored all 8 features with distribution plots, correlation heatmap, and label analysis. `temp_mean`, `load_factor`, and `hotspot_fraction` emerged as the strongest fault indicators.
@@ -131,13 +131,13 @@ Key limitations and proposed improvements:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 `Python` `Pandas` `NumPy` `Scikit-learn` `SHAP` `Matplotlib` `Seaborn` `SciPy` `Google Colab` `GitHub`
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ```bash
 git clone https://github.com/siddhramesh/thermal-powerline-hotspot-detection.git
@@ -146,4 +146,4 @@ Then open the notebook in Colab using the badge at the top and run all cells.
 
 ---
 
-**Author:** Siddh Ramesh | Capstone Project — AI-Based Thermal Powerline Hotspot Detection
+**Author:** Siddhramesh | Capstone Project — AI-Based Thermal Powerline Hotspot Detection
