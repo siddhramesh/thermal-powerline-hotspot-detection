@@ -1,180 +1,149 @@
-# AI-Based Thermal Powerline Hotspot Detection
+# 🔥 AI-Based Thermal Powerline Hotspot Detection
 
-> An end-to-end AI pipeline for detecting thermal anomalies in power lines and transmission towers using drone-based thermal inspection data.
+> End-to-end AI pipeline for detecting thermal anomalies in power lines and transmission towers using drone-based thermal inspection data.
 
----
-
-##  Project Overview
-
-Power lines and transmission towers are prone to thermal failures caused by loose connectors, overloading, insulation degradation, and corrosion. Left undetected, these anomalies can lead to equipment failure, wildfires, and large-scale outages.
-
-This capstone project builds a complete **AI-driven inspection pipeline** that:
-- Analyzes tile-level thermal features extracted from drone imagery
-- Classifies tiles as **normal** or **thermal anomaly** using machine learning
-- Aggregates predictions into a **spatial risk heatmap** for corridor-level analysis
-- Recommends **drone flight strategies and maintenance actions** based on fault severity
-
-> ⚠️ Note: This project works on pre-extracted thermal features (not raw images), simulating real-world outputs after drone thermal tiling and feature extraction.
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/siddhramesh/thermal-powerline-hotspot-detection/blob/main/thermal_hotspot_detection.ipynb)
 
 ---
 
-##  Repository Structure
+## 📌 Overview
+
+Power lines and towers develop thermal faults due to loose connectors, overloading, and insulation degradation. This project builds an AI pipeline that classifies tile-level thermal features from drone imagery, maps spatial risk zones, and recommends maintenance actions — enabling predictive maintenance before failures occur.
+
+---
+
+## 📂 Repository Structure
 
 ```
 thermal-powerline-hotspot-detection/
 │
-├── thermal_hotspot_detection.ipynb   ← Main Jupyter Notebook (all 5 tasks)
+├── thermal_hotspot_detection.ipynb   ← Main notebook (all 5 tasks)
 ├── thermal_powerline.csv             ← Dataset (6,000 tiles, 8 features)
-├── README.md                         ← Project documentation
+├── README.md
 │
 └── images/
-    ├── eda_analysis.png              ← Task 1: EDA & feature distributions
-    ├── ml_model_evaluation.png       ← Task 2: Model comparison & evaluation
-    ├── spatial_risk_heatmap.png      ← Task 3: Thermal risk heatmaps
-    ├── drone_maintenance_plan.png    ← Task 4: Drone inspection plan
-    └── task5_reflection.png          ← Task 5: Limitations & improvements
+    ├── task1_eda.png
+    ├── task2_confusion_matrices.png
+    ├── task2_roc_curves.png
+    ├── task2_metrics_comparison.png
+    ├── task2_feature_importance.png
+    ├── task2_shap.png
+    ├── task3_spatial_heatmap.png
+    ├── task4_drone_plan.png
+    └── task5_reflection.png
 ```
 
 ---
 
-##  Notebook
-
-**[Open in Google Colab](https://colab.research.google.com/github/siddhramesh/thermal-powerline-hotspot-detection/blob/main/thermal_hotspot_detection.ipynb)**
-
----
-
-##  Dataset
+## 📊 Dataset
 
 | Property | Value |
 |---|---|
-| Total Tiles | 6,000 |
-| Features | 8 thermal + operational |
+| Tiles | 6,000 |
+| Features | 8 |
 | Label | `fault_label` (0 = Normal, 1 = Fault) |
-| Class Distribution | 64.8% Normal / 35.2% Fault |
+| Class Split | 64.8% Normal / 35.2% Fault |
 | Missing Values | None |
-
-### Feature Description
 
 | Feature | Description |
 |---|---|
 | `temp_mean` | Average tile temperature (°C) |
-| `temp_max` | Peak temperature in the tile (°C) |
+| `temp_max` | Peak temperature in tile (°C) |
 | `temp_std` | Temperature variation within tile |
-| `delta_to_neighbors` | Temperature difference vs adjacent tiles |
-| `hotspot_fraction` | % of pixels exceeding hotspot threshold |
+| `delta_to_neighbors` | Temp difference vs adjacent tiles |
+| `hotspot_fraction` | % of pixels above hotspot threshold |
 | `edge_gradient` | Thermal sharpness at tile boundaries |
 | `ambient_temp` | Outdoor air temperature (°C) |
-| `load_factor` | Electrical load on line (0–1 scale) |
+| `load_factor` | Electrical load on line (0–1) |
 
 ---
 
-##  Tasks & Results
+## 🧪 Tasks
 
 ### Task 1 — Data Understanding
-Explored all 8 features, plotted distributions, correlation heatmap, and label balance. Key finding: `temp_mean`, `temp_max`, and `hotspot_fraction` are the strongest visual separators between normal and fault tiles.
+Explored all 8 features with distribution plots, correlation heatmap, and label analysis. `temp_mean`, `load_factor`, and `hotspot_fraction` emerged as the strongest fault indicators.
 
-![EDA Analysis](images/eda_analysis.png)
+![EDA](images/task1_eda.png)
 
 ---
 
 ### Task 2 — Machine Learning Model
-Trained and compared 3 classification models:
+Trained and compared 3 models. Selected **Random Forest** through a 2-step elimination process.
 
-| Model | F1-Score | Precision | Recall | ROC-AUC |
+| Model | F1 | Precision | Recall | ROC-AUC |
 |---|---|---|---|---|
 | Logistic Regression | 0.740 | 0.777 | 0.707 | 0.861 |
-| Random Forest | 0.755 | 0.824 | 0.697 | 0.874 |
-| **Gradient Boosting ✅** | **0.753** | **0.827** | **0.690** | **0.886** |
+| **Random Forest ✅** | **0.755** | **0.824** | **0.697** | **0.874** |
+| Gradient Boosting | 0.753 | 0.827 | 0.690 | 0.886 |
 
-**Chosen Model: Gradient Boosting** — highest ROC-AUC (0.886), best overall discrimination between fault and normal tiles.
+**Model Selection Logic:**
+```
+Logistic Regression → Eliminated: data is non-linear (fault rate jumps 20%→87%
+                      across temp ranges) + 37% more false alarms (86 vs 63 FPs)
 
-> Accuracy alone is insufficient because a model predicting "Normal" for all tiles would achieve 64.8% accuracy while missing every single fault — catastrophic in power infrastructure.
+Gradient Boosting   → Eliminated: ROC-AUC gap is only 0.012 (negligible) +
+                      under-calls 7 genuinely critical zones (true fault rate 0.60–1.00)
 
-![ML Evaluation](images/ml_model_evaluation.png)
+Random Forest ✅    → Chosen: highest F1, fewer false flags, transparent feature
+                      importance, SHAP explainability, higher Recall
+```
 
----
-
-### Task 3 — Spatial Risk Analysis & Heatmap
-Aggregated model predictions across a 30×30 spatial grid. Generated thermal risk heatmaps showing inspection priority zones.
-
-| Risk Tier | Threshold | Zones |
-|---|---|---|
-| 🔴 Critical | ≥ 0.75 | 7 |
-| 🟠 High | 0.55–0.75 | 58 |
-| 🔷 Medium | 0.35–0.55 | 369 |
-| 🔵 Low | < 0.35 | 466 |
-
-![Spatial Risk Heatmap](images/spatial_risk_heatmap.png)
+![Confusion Matrices](images/task2_confusion_matrices.png)
+![ROC Curves](images/task2_roc_curves.png)
+![Feature Importance](images/task2_feature_importance.png)
+![SHAP](images/task2_shap.png)
 
 ---
 
-### Task 4 — Drone Inspection & Maintenance Plan
-Recommended drone flight strategies and maintenance actions based on hotspot severity and spatial clustering.
+### Task 3 — Spatial Risk Analysis
+Aggregated RF predictions across a 30×30 spatial grid representing the power corridor.
 
-| Tier | Drone Altitude | Timeline | Action |
+| Tier | Zones | Threshold | Action |
 |---|---|---|---|
-| 🔴 Critical | 5–10 m | Immediate | Emergency shutdown assessment, connector replacement |
-| 🟠 High | 10–20 m | Within 48 hrs | Inspect joints & clamps, insulation check |
-| 🔷 Medium | 20–40 m | Within 2 weeks | Visual inspection, thermal re-check |
-| 🔵 Low | 40–60 m | Monthly | Routine monitoring |
+| 🔴 Critical | 12 | ≥ 0.75 | Immediate dispatch |
+| 🟠 High | 95 | 0.55–0.75 | 48hr inspection |
+| 🔷 Medium | 326 | 0.35–0.55 | 2-week schedule |
+| 🔵 Low | 467 | < 0.35 | Routine monthly |
 
-> 58 spatial clusters of High/Critical zones detected — indicating systemic overloading along specific corridor segments, not just isolated failures.
+![Heatmap](images/task3_spatial_heatmap.png)
 
-![Drone Maintenance Plan](images/drone_maintenance_plan.png)
+---
+
+### Task 4 — Drone & Maintenance Plan
+Recommended drone flight strategies and maintenance actions per risk tier. Spatial clustering detected multiple adjacent High/Critical zones indicating systemic corridor-level overloading.
+
+![Drone Plan](images/task4_drone_plan.png)
 
 ---
 
 ### Task 5 — Reflection
-Discussed key dataset limitations and proposed a production-grade improved pipeline.
+Key limitations and proposed improvements:
 
-**Key Limitations:**
-- Synthetic/simulated dataset (no real sensor noise or calibration errors)
-- No GPS coordinates — spatial grid was simulated
-- Single point-in-time snapshot — no temporal fault progression
-- No weather/wind data for thermal normalization
-- No cost-sensitive learning (false negatives more costly than false positives)
-
-**Proposed Improvements:**
-- Real thermal imagery processed with CNN / Vision Transformer
-- Time-series data across multiple flights using LSTM models
-- Real GPS coordinates for georeferenced risk maps
-- Weather API + SCADA load integration
-- Cost-sensitive retraining with asymmetric misclassification penalties
-- Live automated inspection dashboard with SMS/email alerts
+| Limitation | Severity | Proposed Fix |
+|---|---|---|
+| Synthetic dataset | 9/10 | Real thermal imagery + CNN/ViT |
+| No GPS coordinates | 8/10 | Georeferenced tiles + Folium maps |
+| Single snapshot | 8/10 | Time-series flights + LSTM |
+| No weather data | 7/10 | Weather API + SCADA integration |
+| No cost weighting | 6/10 | Cost-sensitive learning (FN penalty 5–10×) |
 
 ![Reflection](images/task5_reflection.png)
 
 ---
 
-##  Tech Stack
+## 🛠️ Tech Stack
 
-| Tool | Purpose |
-|---|---|
-| Python 3 | Core language |
-| Pandas / NumPy | Data manipulation |
-| Scikit-learn | ML models & evaluation |
-| Matplotlib / Seaborn | Visualization |
-| SciPy | Spatial cluster detection |
-| Google Colab | Development environment |
-| GitHub | Version control & hosting |
+`Python` `Pandas` `NumPy` `Scikit-learn` `SHAP` `Matplotlib` `Seaborn` `SciPy` `Google Colab` `GitHub`
 
 ---
 
-##  How to Run
+## 🚀 How to Run
 
-1. Clone the repository:
 ```bash
 git clone https://github.com/siddhramesh/thermal-powerline-hotspot-detection.git
 ```
-
-2. Open the notebook in Google Colab:
-    [Click here to open in Colab](https://colab.research.google.com/github/siddhramesh/thermal-powerline-hotspot-detection/blob/main/thermal_hotspot_detection.ipynb)
-
-3. Run all cells from top to bottom (Runtime → Run all)
+Then open the notebook in Colab using the badge at the top and run all cells.
 
 ---
 
-## Author
-
-**Siddhramesh Diksanggi**  
-Capstone Project — AI-Based Power Line & Tower Hotspot Detection Using Thermal Data 
+**Author:** Siddh Ramesh | Capstone Project — AI-Based Thermal Powerline Hotspot Detection
