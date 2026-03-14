@@ -177,10 +177,4 @@ git clone https://github.com/siddhramesh/thermal-powerline-hotspot-detection.git
 ## Author
 
 **Siddhramesh Diksanggi**  
-Capstone Project — AI-Based Power Line & Tower Hotspot Detection Using Thermal Data
-
----
-
-##  License
-
-This project is for educational purposes as part of a capstone submission.
+Capstone Project — AI-Based Power Line & Tower Hotspot Detection Using Thermal Data 
